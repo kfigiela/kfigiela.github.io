@@ -6,9 +6,9 @@
     </div>
 
     <ul class="sidebar-nav">
-      <li class="sidebar-nav-item{% if page.title == "Home" %} active{% endif %}">
+      <!-- <li class="sidebar-nav-item{% if page.title == "Home" %} active{% endif %}">
         <a href="/">Home</a>
-      </li>
+      </li> -->
 
       {% comment %}
         The code below dynamically generates a sidebar nav of pages with
@@ -25,12 +25,13 @@
           {% endif %}
         {% endif %}
       {% endfor %}
-
-      <li class="sidebar-nav-item"><a href="{{ site.github.repo }}/archive/v{{ site.version }}.zip">Download</a></li>
-      <li class="sidebar-nav-item"><a href="{{ site.github.repo }}">GitHub project</a></li>
-      <li class="sidebar-nav-item">Currently v{{ site.version }}</li>
+    </ul>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="{{ site.social.github }}"><i class="fa fa-github-alt fa-2"></i> Github</a></li>
+      <li class="sidebar-nav-item"><a href="{{ site.social.linkedin }}"><i class="fa fa-linkedin fa-2"></i> LinkedIn</a></li>
+      <li class="sidebar-nav-item"><a href="mailto:{{ site.social.email }}"><i class="fa fa-envelope fa-2"></i> {{ site.social.email}}</a></li>
     </ul>
 
-    <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
+    <!-- <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p> -->
   </div>
 </div>

@@ -6,14 +6,14 @@ pygments:         true
 permalink:        pretty
 
 # Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:              http://hyde.getpoole.com
+title:            Kamil Figiela
+tagline:          ''
+description:      'Ph.D. candidate at <a href="http://agh.edu.pl">AGH</a>, Hacker,<br/> Co-founder of <a href="http://dropsport.com">Dropsport</a>.'
+url:              http://kfigiela.github.io
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:           'Kamil Figiela'
+  url:            https://github.com/kfigiela
 
 paginate:         5
 
@@ -21,4 +21,13 @@ paginate:         5
 version:          2.0.0
 
 github:
-  repo:           https://github.com/poole/hyde
+  repo:           https://github.com/kfigiela/kfigiela.github.io
+  
+social:
+  github:         https://github.com/kfigiela
+  linkedin:       https://linkedin.com/in/kfigiela
+  email:          kfigiela@agh.edu.pl
+  
+ga:
+  id:             UA-49684412-1
+  domain:         kfigiela.github.io

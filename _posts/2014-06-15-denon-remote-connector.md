@@ -1,11 +1,13 @@
 ---
 layout: post
-title: Denon DRA-F109 meets Raspberry Pi
+title: Hacking Denon DRA-F109 remote connector
 ---
 
-Recently I bought Denon DRA-F109 Stereo Receiver. In this post I describe how the receiver may be integrated with Raspberry Pi by using receiver's *Remote Connector*, enabling to use Denon remote to control both devices and other features, such as alarm clock built into the DRA-F109, dimmer and power control.
+Recently I bought Denon DRA-F109 Stereo Receiver. In this post I describe how the receiver may be integrated with Raspberry Pi by using receiver's *Remote Connector*, enabling to use Denon remote to control both devices. Integration covers also alarm clock built into the DRA-F109, display dimmer, sleep timer and power control, as it was native Denon system device.
 
 ----
+
+### Hardware setup
 
 The device itself is only tuner with amplifier. It also has couple of external inputs (2 coaxial, 1 optical and 2 analog). The other parts F109 system are CD player (DCD-F109) and network player (DNP-F109) that are connected using coaxial inputs. The remote control bundled with DRA-F109 is an overkill for just amplifier, but you can connect all three devices if they are connected using *Remote Connector* cable which is 3.5 mm TRS connector. 
 
@@ -15,13 +17,18 @@ Since I have only the receiver and use [Raspberry Pi](http://raspberrypi.org) wi
 
 ### Hacking remote connector
 
-> Remember, if you to do this at home, you may break your Raspberry or Denon. Try at own risk!
+> Remember, you may break your Raspberry or Denon receiver. Try at own risk!
 
-At present, nobody wants to reinvent the wheel. So expected that they must have used standard bus for data transmission in *Remote Connector*. The initial guesses were: IR receiver (like TSOP output), RS232 and I<sup>2</sup>C. I expected that bus requires two way communication for Network Player, RS232 was the most possible as the UART is found in most µC, so I gave it a try. First of all, I needed to determine pinout – I took the multimeter and when buttons were pressed there was voltage drop on connector ring.  I took USB2Serial adapter, two resistors to make voltage divider (remote connector is in 5V logic level) and started to experiment. Suprisingly, it worked! The data is transmitted at standard 115.2 kbps. Then I connected it to Raspberry Pi UART RX pin.
+At present, nobody wants to reinvent the wheel. So expected that they must have used standard bus for data transmission in *Remote Connector*. The initial guesses were: IR receiver (TSOP4838-like output), RS232 and I<sup>2</sup>C. I expected that bus requires two way communication for Network Player, so serial connection seemed the most possible as UART is present in most µC. First of all, I needed to determine pinout – I took the multimeter and when buttons were pressed there was voltage drop on ring of TRS plug. I took 3.3V USB-to-Serial adapter, two resistors (1.8kΩ and 3.2kΩ in my case) to make [voltage divider](http://en.wikipedia.org/wiki/Voltage_divider) (Denon outputs signal in 5V logic) and started to experiment. Suprisingly, it worked! The data is transmitted at standard 115.2 kbps. The next step was to connect it to Raspberry Pi UART RX pin.
 
-For now, it is enough just to receive data from the receiver – it is also the easier part to implement as it requires only voltage divider and the protocol may be reverse engineered from data we receive. Unfortuanetly, tip of the connector which is supposed to be RX of the receiver is at 5V when floating. I don't have USB2Serial adapter at 5V and definetly don't want to fry my Raspberry Pi, so for now, we will keep on receiving data from DRA-F109.
+> **Wiring diagram**
+> ![Wiring diagram](/img/2014-06-15-denon-remote-connector_circuit.png) 
 
-![Denon RC-1163 Remote Control](/img/2014-06-15-denon-remote-connector_receiver.jpg)
+For now, it is enough just to receive data from the receiver – it is also the easier part to implement as it requires only voltage divider and the protocol may be reverse engineered from data we receive. Unfortuanetly, tip of the connector which is supposed to be RX of the receiver is at 5V when floating. I don't have 5V USB-to-Serial adapter and definetly don't want to fry my Raspberry Pi, so for now, we will keep on receiving data from DRA-F109.
+
+> **Note:** It is important to disable TTY and kgdb at serial port in `/boot/cmdline.txt` and in `/etc/inittab`. Otherwise your Raspberry Pi will crash (or at least will be halted by kgdb via serial).
+
+![Denon RC-1163 Remote Control](/img/2014-06-15-denon-remote-connector_remote.jpg)
 
 ### The protocol
 
@@ -29,7 +36,7 @@ The next challenge was to decode the incoming data. Stream is organized in packe
 
 #### Denon AVR serial protocol
 
-The receiver implements two message protocols. If the `id` is set to `0x80` and destination is `0x00` then payload follows the Denon AVR serial protocol present in Home Theater receivers in form of standard RS232 port and it has [official documentation](http://www.ip-symcon.de/forum/attachment.php?attachmentid=23493&d=1384502367). Commands are ASCII with trailing `\r`. DRA-F109 implements a small subset of the protocol as it is only stereo amp, but still any documentation is better than nothing. Till now I identified the following commands (in [regular expression](http://en.wikipedia.org/wiki/Regular_expression) notation), the list for sure lacks DAB+ messages as I don't have DAB+ broadcast at my place yet:
+The receiver implements two message formats. If the `id` is set to `0x80` and destination is `0x00` then payload follows the Denon AVR serial protocol present in Home Theater receivers in form of standard RS232 port and it has [official documentation](http://www.ip-symcon.de/forum/attachment.php?attachmentid=23493&d=1384502367). Commands are ASCII with trailing `\r`. DRA-F109 implements a small subset of the protocol as it is only stereo amp, but still any documentation is better than nothing. Till now I identified the following commands (in [regular expression](http://en.wikipedia.org/wiki/Regular_expression) notation), the list for sure lacks DAB+ messages as I don't have DAB+ broadcast at my place yet:
 
 * `MV(\d\d)`: Volume set to `$1`.
 * `MUON`: Mute on.
@@ -69,7 +76,7 @@ The receiver implements two message protocols. If the `id` is set to `0x80` and 
   
 * `TO(ON|OFF) (ON|OFF)`: Alarm once is `$1` and every is `$2`.
 
-Unfortuanetly, I don't have DNP-F109 player to see what is available in order to control the receiver. Hopefuly, the same packet format will work.
+I don't have DNP-F109 player to see what is available in order to control the receiver. Probalby, the same packet format will work for controlling the receiver.
 
 #### Binary protocol
 
@@ -99,7 +106,7 @@ It also sends when source is changed (also by mechanical button on the receiver)
 
 ##### Network and CD control
 
-Depending on selected source (CD or Network Player) the `destination` field is be `0x25` for CD player or `0x26` for network player and the payload ix always `0x00`. The button presses are mapped to ids as follows:
+Depending on selected source (CD or Network Player) the `destination` field is `0x25` for CD player or `0x26` for network player and the payload is always `0x00`. The button presses are mapped to ids as follows:
 
 * `0x32`: Play/Pause
 * `0x33`: Stop
@@ -139,16 +146,13 @@ The dimmer function sends `0x43 0x00 [brightness]` where brightness may be 0, 1,
 The receiver also sends the following commands:
 
 * `0x84 0x00 0x00` when the System Settings are opened,
-* `0x02 0x01 0x00` when the Amp is turned off,
-* `0x42 0x00 0x00` when the Amp is turned on,
-
+* `0x02 0x01 0x00` when the receiver goes to stand-by,
+* `0x42 0x00 0x00` when the receiver is turned on,
 
 #### What is missing?
 
 The receiver does not send anything if *Add*, *Call*, *Search* and *Network Setup* buttons are pressed on the remote. These buttons are used exclusively by network player. TSOP receiver is still needed at Raspberry Pi to handle these buttons. Unfortuanetly, it seems to have a little worse reception than receiver one.
 
-### Software for Raspberry Pi
+### The code
 
-The example ruby script that handles the protocol is available at [GitHub repository](https://github.com/kfigiela/denon).
-
-
+The ruby code is available under MIT license at [GitHub repository](https://github.com/kfigiela/denon-raspberry). The `demo.rb` is example of receiving data from Denon – it is not Rasbperry Pi specific. The repository includes my setup that is described in [second post](/2014/06/20/denon-meets-raspberrypi/)

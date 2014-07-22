@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hacking Denon DRA-F109 remote connector
+title: Hacking Denon DRA-F109 remote connector (Updated 22.07.2014)
 ---
 
 Recently I bought Denon DRA-F109 Stereo Receiver. In this post I describe how the receiver may be integrated with Raspberry Pi by using receiver's *Remote Connector*, enabling to use Denon remote to control both devices. Integration covers also alarm clock built into the DRA-F109, display dimmer, sleep timer and power control, as it was native Denon system device.
@@ -104,9 +104,16 @@ It also sends when source is changed (also by mechanical button on the receiver)
 * `0x01 0x07 0x00` and `0x33 0x17 0x00`: Digital In
 * `0x33 0x08 0x00`: Tuner (both FM and DAB)
 
-##### Network and CD control
+##### Control of input devices
 
-Depending on selected source (CD or Network Player) the `destination` field is `0x25` for CD player or `0x26` for network player and the payload is always `0x00`. The button presses are mapped to ids as follows:
+Depending on selected source the `destination` field is:
+* `0x23` for Analog 1,
+* `0x24` for Analog 2,
+* `0x25` for CD player,
+* `0x26` for network player,
+* `0x27` for Digital.
+
+The payload is always `0x00`. The button presses are mapped to ids as follows:
 
 * `0x32`: Play/Pause
 * `0x33`: Stop
@@ -156,3 +163,7 @@ The receiver does not send anything if *Add*, *Call*, *Search* and *Network Setu
 ### The code
 
 The ruby code is available under MIT license at [GitHub repository](https://github.com/kfigiela/denon-raspberry). The `demo.rb` is example of receiving data from Denon – it is not Rasbperry Pi specific. The repository includes my setup that is described in [second post](/2014/06/20/denon-meets-raspberrypi/)
+
+## Update: 22.07.2014
+
+Receiver also sends button codes for analog and optical input. That means it is possible to control e.g. CD player or Raspberry Pi connected via analog input. Nice!

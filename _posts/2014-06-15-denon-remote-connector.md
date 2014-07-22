@@ -107,6 +107,7 @@ It also sends when source is changed (also by mechanical button on the receiver)
 ##### Control of input devices
 
 Depending on selected source the `destination` field is:
+
 * `0x23` for Analog 1,
 * `0x24` for Analog 2,
 * `0x25` for CD player,

@@ -7,4 +7,4 @@ I am a software engineer living in Kraków, Poland. I co-founded [Dropsport](htt
 
 My research area includes cloud computing, scientific workflows and discrete optimization techinques. Currently I am involved in [PaaSage](http://www.paasage.eu) and [PLGrid Core](http://www.plgrid.pl/projekty/core) research projects. 
 
-For more information see my (about.me homepage)[http://about.me/kamil.figiela] and my (LinkedIn profile)[http://linkedin.com/in/kfigiela].
+For more information see my [about.me homepage](http://about.me/kamil.figiela) and my [LinkedIn profile](http://linkedin.com/in/kfigiela).

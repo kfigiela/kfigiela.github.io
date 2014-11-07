@@ -43,7 +43,7 @@ sudo /usr/libexec/PlistBuddy -c 'add :ProgramArguments:3 string -e' /System/Libr
 
 ### DHCP configuration
 
-You probably also want to have We may want to use OS X built-in DHCP server. First of all, you'll need to create `/etc/bootpd.plist` file that set-ups DHCP server for `10.0.69.0/24` network with DHCP range of `10.0.69.50-254` and Google DNS server (`8.8.8.8`):
+You probably also want to have We may want to use OS X built-in DHCP server. First of all, you'll need to create `/etc/bootpd.plist` file that setups DHCP server for `10.0.69.0/24` network with dynamic range of `10.0.69.50-254` and providing public DNS server (`8.8.8.8`) to clients:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

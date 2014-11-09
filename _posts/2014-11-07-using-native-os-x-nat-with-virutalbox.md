@@ -110,7 +110,7 @@ Create `/etc/bootpstab` file, here is an example of the content:
 # hostname      hwtype  hwaddr              ipaddr          bootfile
 client1         1       00:01:02:03:04:05   10.0.0.20       
 client2         1       00:a0:b2:ef:ff:0a   10.0.0.20       
-``
+```
 
 ### Further reading
 

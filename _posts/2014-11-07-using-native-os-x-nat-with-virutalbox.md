@@ -3,7 +3,7 @@ layout: post
 title: Using native OS X NAT with VirtualBox
 ---
 
-VirtualBox provides built-in NAT, but on OS X it doesn't allow to access VM from host, so every time I need to set up host only network. I wanted to have one, fully functional NAT and OS X has built-in NAT capability that is used by Internet Sharing – why not use it with VirtualBox?
+VirtualBox provides built-in NAT, but on OS X it doesn't allow to access VM from host, so every time I need to set up host only network. I wanted to have one, fully functional virtual network with NAT routing. OS X has built-in NAT capability that is used by Internet Sharing – why not use it with VirtualBox?
 
 ---
 

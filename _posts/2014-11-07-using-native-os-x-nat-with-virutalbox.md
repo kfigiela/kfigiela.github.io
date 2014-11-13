@@ -25,13 +25,13 @@ net.inet.ip.forwarding=1
 
 to `/etc/sysctl.conf` (create this file if necessary) to make this persist over reboots.
 
-Then add the following NAT rules to `/etc/pf.conf`:
+Then add the following NAT rules to `/etc/pf.conf` after `rdr-anchor` line:
 
 ```
-nat on en0 proto {tcp, udp, icmp} from 10.0.69.0/24 to any -> (en0)
-nat on en1 proto {tcp, udp, icmp} from 10.0.69.0/24 to any -> (en1)
+nat on {en0, en1} proto {tcp, udp, icmp} from 10.0.69.0/24 to any -> {en0, en1}
 pass from {lo0, 10.0.69.0/24} to any keep state
 ```
+
 
 On my Mac `en0` is Gigabit Ethernet and `en1` is AirPort. That way NAT will work regardless of what is my current internet connection. You may need to adjust it depending on your configuration.
 
@@ -41,9 +41,13 @@ To load new rules run `sudo pfctl -e -f /etc/pf.conf` and to ensure that rules a
 sudo /usr/libexec/PlistBuddy -c 'add :ProgramArguments:3 string -e' /System/Library/LaunchDaemons/com.apple.pfctl.plist
 ```
 
-### DHCP configuration
+### Add host-only network to VMs
 
-You probably also want to have We may want to use OS X built-in DHCP server. First of all, you'll need to create `/etc/bootpd.plist` file that setups DHCP server for `10.0.69.0/24` network with dynamic range of `10.0.69.50-254` and providing public DNS server (`8.8.8.8`) to clients:
+This should be quite straightforward, simply add host-only network to your VMs and run DHCP client or set static ip from chosen network.
+
+### DHCP configuration (optional)
+
+This is optional, but you probably want to have DHCP server. We may use OS X built-in DHCP server. First of all, you'll need to create `/etc/bootpd.plist` file that setups DHCP server for `10.0.69.0/24` network with dynamic range of `10.0.69.50-254` and providing public DNS server (`8.8.8.8`) to clients:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -91,10 +95,6 @@ You probably also want to have We may want to use OS X built-in DHCP server. Fir
 ```
 
 Then you may enable `bootpd` with `sudo /bin/launchctl load -w /System/Library/LaunchDaemons/bootps.plist`. To disable just replace `load` with `unload` in the command.
-
-### Add host-only network to VMs
-
-This should be quite straightforward, simply add host-only network to your VMs and run DHCP client or set static ip from chosen network
 
 ### Set static MAC-based DHCP IP addresses (optional)
 

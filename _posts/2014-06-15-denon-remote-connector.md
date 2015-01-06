@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hacking Denon DRA-F109 remote connector (Updated 22.07.2014)
+title: Hacking Denon DRA-F109 remote connector (Updated 07.01.2015)
 ---
 
 Recently I bought Denon DRA-F109 Stereo Receiver. In this post I describe how the receiver may be integrated with Raspberry Pi by using receiver's *Remote Connector*, enabling to use Denon remote to control both devices. Integration covers also alarm clock built into the DRA-F109, display dimmer, sleep timer and power control, as it was native Denon system device.
@@ -32,11 +32,11 @@ For now, it is enough just to receive data from the receiver – it is also the 
 
 ### The protocol
 
-The next challenge was to decode the incoming data. Stream is organized in packets. The packet format is `0x00 0xff 0x55 [payload length] 0x00 0x00 [id] [destination] [payload]`. Sometimes, but not always there is one or two more bytes sent by amp, but they don't seem to be important – possibly it is some kind of padding.
+The next challenge was to decode the incoming data. Stream is organized in packets. The packet format is `0x00 0xff 0x55 [payload length] 0x00 0x00 [id] [destination] [payload] [checksum]`. <s>Sometimes, but not always there is one or two more bytes sent by amp, but they don't seem to be important – possibly it is some kind of padding.</s> The last byte is simple checksum: sum of all bytes but checksum itsef modulo 256. Strangely, it is not always present. Specifically, I observe that when checksum value should be `0x19` it is not transmitted. This is definitely sth that may be reproduced e.g. with `SITUNER` message or with specific radio station name. The reason is unknown, but it prevents from effectively implementing checksum verification as we don't know whether we will get it. Fortuanetly, in practice it is not a big deal. I also noticed that header is sometimes wrong (e.g. `0x00 0x00 0x55` or even `0x00 0x00 0x00`), but it happens rarely.
 
 #### Denon AVR serial protocol
 
-The receiver implements two message formats. If the `id` is set to `0x80` and destination is `0x00` then payload follows the Denon AVR serial protocol present in Home Theater receivers in form of standard RS232 port and it has [official documentation](http://www.ip-symcon.de/forum/attachment.php?attachmentid=23493&d=1384502367). Commands are ASCII with trailing `\r`. DRA-F109 implements a small subset of the protocol as it is only stereo amp, but still any documentation is better than nothing. Till now I identified the following commands (in [regular expression](http://en.wikipedia.org/wiki/Regular_expression) notation), the list for sure lacks DAB+ messages as I don't have DAB+ broadcast at my place yet:
+The receiver implements two message formats. If the `id` is set to `0x80` and destination is `0x00` then payload follows the Denon AVR serial protocol present in Home Theater receivers in form of standard RS232 port and it has [official documentation](http://www.ip-symcon.de/forum/attachment.php?attachmentid=23493&d=1384502367). Commands are ASCII with trailing `\r`. DRA-F109 implements a small subset of the protocol as it is only stereo amp, but still any documentation is better than nothing. Till now I identified the following commands (in [regular expression](http://en.wikipedia.org/wiki/Regular_expression) notation), <s>the list for sure lacks DAB+ messages as I don't have DAB+ broadcast at my place yet</s>:
 
 * `MV(\d\d)`: Volume set to `$1`.
 * `MUON`: Mute on.
@@ -49,18 +49,20 @@ The receiver implements two message formats. If the `id` is set to `0x80` and de
 * `PSSDB (ON|OFF)`: SDB tone turned on or off.
 * `PSSDI (ON|OFF)`: Source direct turned on or off.
 * `SICD`: Source set to CD.
-* `SITUNER`: Source set to Tuner.
+* `SITUNER`: Source set to Tuner. That one doesn't have checksum!
 * `SINETWORK`: Source set to Network Player.
 * `SIAUX1`: Source set to Analog In 1.
 * `SIAUX2`: Source set to Analog In 2.
 * `SIDIGITAL_IN`: Source set to Digital In.
 * `TMANFM`: Tuner band set to FM.
+* `TMDA`: Tuner band set to DAB+.
 * `TMANMANUAL`: Tuner set to manual (mono) mode.
 * `TMANAUTO`: Tuner set to automatic stereo mode.
 * `TPAN(\d\d)`: Tuned to preset `$1`.
 * `TPANOFF`: Tuned out of preset (manual tuning or tuner off).
 * `TFAN(\d{6})`: Tuner tuned to FM `$1/100.0` MHz.
-* `SSTPN(\d\d)(.{9})(\d{8})`: Preset `$1` is station named `$2` at `$3/100.0` MHz.
+* `TFDA(\d\d?[A-Z]})`: Tuner tuned to DAB+ `$1` frequency block (e.g. `12D`). Unfortuanetly, there is no information on tuned station (except if preset was tuned, then we get `TPAN(\d\d)`). 
+* `SSTPN(\d\d)(.{9})(\d{8})`: Preset `$1` is station named `$2` at `$3/100.0` MHz. Frequency is always 999999.99 MHz for DAB+ stations.
 * `PWSTANDBY`: Amp is going to stand by.
 * `PWON`: Amp turned on.
 * `TS(ONCE|EVERY) 2(\d\d)(\d\d)-2(\d\d)(\d\d) (..)(\d\d)`: Alarm of type `$1` set to turn on the device at `$2`:`$3` and turn it off at `$4`:`$5` at function `$6` with preset `$7`, where function is: 
@@ -76,7 +78,7 @@ The receiver implements two message formats. If the `id` is set to `0x80` and de
   
 * `TO(ON|OFF) (ON|OFF)`: Alarm once is `$1` and every is `$2`.
 
-I don't have DNP-F109 player to see what is available in order to control the receiver. Probalby, the same packet format will work for controlling the receiver.
+I don't have DNP-F109 player to see what are possibilities for controling the receiver. Probalby, the same packet format will work for controlling the receiver.
 
 #### Binary protocol
 
@@ -145,11 +147,11 @@ The payload is always `0x00`. The button presses are mapped to ids as follows:
 * `0x5c`: Random
 * `0x5d`: Repeat
 
-For example, packet of `0x00 0xff 0x55 0x01 0x00 0x00 0x32 0x26 0x00` means *Play/pause* Network Player. 
+For example, packet of `0x00 0xff 0x55 0x01 0x00 0x00 0x32 0x26 0x00 0xad` (checksum omited) means *Play/pause* Network Player. 
 
 ##### Special functions
 
-The dimmer function sends `0x43 0x00 [brightness]` where brightness may be 0, 1, 2 or 3 which means bright, dim, dark, display off respectively.
+The dimmer function sends `0x43 0x00 [brightness]` where brightness may be 0, 1, 2 or 3 which means *bright*, *dim*, *dark*, *display off* respectively.
 
 The receiver also sends the following commands:
 
@@ -168,3 +170,7 @@ The ruby code is available under MIT license at [GitHub repository](https://gith
 ## Update: 22.07.2014
 
 Receiver also sends button codes for analog and optical input. That means it is possible to control e.g. CD player or Raspberry Pi connected via analog input. Nice!
+
+## Update: 07.01.2015
+
+I've finally tried transmitting data to Denon. The tip of the connector indeed is RX pin for Denon. The data transmitted to it is also echoed back on TX (I suspect that it is done by simple circuit, not uC, as it works with any baud rate). I also discovered that the extra byte of data is actually simple checksum, but it is not always present.  Unfortuanetly, amp does not respond to commands that it sends. I suspect that there needs to be flag in header that marks the messages sent to amp. I don't think that any progress can be made without access to original network player. 

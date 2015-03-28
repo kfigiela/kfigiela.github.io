@@ -7,4 +7,4 @@ title: LIRC config for Denon DRA-F109 remote
 
 ---
 
-<script src="https://gist.github.com/kfigiela/614ca5e986ded3510e68.js"></script>
+{% gist kfigiela/614ca5e986ded3510e68 %}

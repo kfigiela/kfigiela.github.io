@@ -3,8 +3,8 @@ layout: page
 title: About
 ---
 
-I am a software engineer living in Kraków, Poland. I co-founded [Dropsport](http://dropsport.com) – social platform dedicated to finding sport partners. Currently I am doing PhD in Computer Science and work in [the Distributed Computing Environments Team](http://dice-cyfronet.github.io) at [AGH University of Science and Technology](http://agh.edu.pl).
+I am a software engineer living in Kraków, Poland. I co-founded [Dropsport](http://dropsport.com) – social platform dedicated to finding sport partners. Recently, I co-founded another company – [New Byte Order](http://www.newbyteorder.com) – that builds visual programming platform based on Luna language that we develop.  I am also doing PhD in Computer Science and collaborate with [the Distributed Computing Environments Team](http://dice-cyfronet.github.io) at [AGH University of Science and Technology](http://agh.edu.pl).
 
-My research area includes cloud computing, scientific workflows and discrete optimization techinques. Currently I am involved in [PaaSage](http://www.paasage.eu) and [PLGrid Core](http://www.plgrid.pl/projekty/core) research projects. 
+My fields of expertise include cloud computing, distributed systems, scientific workflows and discrete optimization techinques.
 
-For more information see my [about.me homepage](http://about.me/kamil.figiela) and my [LinkedIn profile](http://linkedin.com/in/kfigiela).
+For more information you may consider visiting my [LinkedIn profile](http://linkedin.com/in/kfigiela). Feel free to drop me a line if you have any questions!

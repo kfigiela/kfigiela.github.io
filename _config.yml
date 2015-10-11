@@ -7,7 +7,7 @@ permalink:        pretty
 # Setup
 title:            Kamil Figiela
 tagline:          ''
-description:      'Ph.D. candidate at <a href="http://agh.edu.pl">AGH</a>, Hacker,<br/> Co-founder of <a href="http://dropsport.com">Dropsport</a>.'
+description:      'Hacker,<br/> Co-founder of <a href="http://newbyteorder.com">New Byte Order</a>,<br/> Ph.D. candidate at <a href="http://agh.edu.pl">AGH</a>.'
 url:              http://kfigiela.github.io
 
 author:
@@ -21,12 +21,12 @@ version:          2.0.0
 
 github:
   repo:           https://github.com/kfigiela/kfigiela.github.io
-  
+
 social:
   github:         https://github.com/kfigiela
   linkedin:       https://linkedin.com/in/kfigiela
-  email:          kfigiela@agh.edu.pl
-  
+  email:          kamil.figiela@gmail.com
+
 ga:
   id:             UA-49684412-1
   domain:         kfigiela.github.io

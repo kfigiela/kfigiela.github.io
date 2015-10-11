@@ -7,6 +7,10 @@ title: Complete guide to Denon DRA-F109 control protocol
 
 Denon DRA-F109/DNP-F109/DCD-F109 remote connector is in fact TTL-level (5V) serial port. The connector is  3.5mm TRS jack (standard stereo plug). Tip is RX, ring is TX, sleeve is ground. Data is transmitted at 115.2 kbps baud rate. It may be easily connected to non-Denon hardware by using cheap 5V tolerant USB-to-Serial adapter. The receiver (DRA-F109) echoes back data recieved from other devices.
 
+
+----
+
+
 # Data protocol
 
 > **Note:** `00` in this chapter means `0x00` (in hex)

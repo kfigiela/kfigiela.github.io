@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hacking Denon DRA-F109 remote connector (Updated 07.01.2015)
+title: Hacking Denon DRA-F109 remote connector (Updated 27.05.2015)
 ---
 
 Recently I bought Denon DRA-F109 Stereo Receiver. In this post I describe how the receiver may be integrated with Raspberry Pi by using receiver's *Remote Connector*, enabling to use Denon remote to control both devices. Integration covers also alarm clock built into the DRA-F109, display dimmer, sleep timer and power control, as it was native Denon system device.
@@ -32,7 +32,7 @@ For now, it is enough just to receive data from the receiver – it is also the 
 
 ### The protocol
 
-The next challenge was to decode the incoming data. Stream is organized in packets. The packet format is `0x00 0xff 0x55 [payload length] 0x00 0x00 [id] [destination] [payload] [checksum]`. <s>Sometimes, but not always there is one or two more bytes sent by amp, but they don't seem to be important – possibly it is some kind of padding.</s> The last byte is simple checksum: sum of all bytes but checksum itsef modulo 256. Strangely, it is not always present. Specifically, I observe that when checksum value should be `0x19` it is not transmitted. This is definitely sth that may be reproduced e.g. with `SITUNER` message or with specific radio station name. The reason is unknown, but it prevents from effectively implementing checksum verification as we don't know whether we will get it. Fortuanetly, in practice it is not a big deal. I also noticed that header is sometimes wrong (e.g. `0x00 0x00 0x55` or even `0x00 0x00 0x00`), but it happens rarely.
+The next challenge was to decode the incoming data. Stream is organized in packets. The packet format is `BRK 0xff 0x55 [payload length] 0x00 0x00 [id] [destination] [payload] [checksum]`. <s>Sometimes, but not always there is one or two more bytes sent by amp, but they don't seem to be important – possibly it is some kind of padding.</s> `BRK` stands for serial port [break condition](http://stackoverflow.com/questions/14803434/receive-read-break-condition-on-linux-serial-port), by default it is represented as `0x00` on POSIX systems. The last byte is simple checksum: sum of all bytes but checksum itsef modulo 256. Strangely, it is not always present. Specifically, I observe that when checksum value should be `0x19` it is not transmitted. This is definitely sth that may be reproduced e.g. with `SITUNER` message or with specific radio station name. The reason is unknown, but it prevents from effectively implementing checksum verification as we don't know whether we will get it. Fortuanetly, in practice it is not a big deal. I also noticed that header is sometimes wrong (e.g. `0x00 0x00 0x55` or even `0x00 0x00 0x00`), but it happens rarely.
 
 #### Denon AVR serial protocol
 
@@ -97,13 +97,21 @@ When function selection button in pressed on the remote the receiver sends:
   * `0x5f 0x00 0x00`: CD
   * `0x60 0x00 0x00`: iPod/USB
   
+These are to turn on the device: 
+
+* `0x01 0x03 0x00`: Network Player
+* `0x01 0x04 0x00`: CD Player
+* `0x01 0x05 0x00`: Analog In 1
+* `0x01 0x06 0x00`: Analog In 2
+* `0x01 0x07 0x00`: Digital In  
+
 It also sends when source is changed (also by mechanical button on the receiver) – these are less interesting, as the same data is also sent using AVR protocol:
 
-* `0x01 0x03 0x00` and `0x33 0x00 0x9b`: Network Player
-* `0x01 0x04 0x00` and `0x33 0x14 0x00`: CD Player
-* `0x01 0x05 0x00` and `0x33 0x15 0x00`: Analog In 1
-* `0x01 0x06 0x00` and `0x33 0x16 0x00`: Analog In 2
-* `0x01 0x07 0x00` and `0x33 0x17 0x00`: Digital In
+* `0x33 0x00 0x9b`: Network Player
+* `0x33 0x14 0x00`: CD Player
+* `0x33 0x15 0x00`: Analog In 1
+* `0x33 0x16 0x00`: Analog In 2
+* `0x33 0x17 0x00`: Digital In
 * `0x33 0x08 0x00`: Tuner (both FM and DAB)
 
 ##### Control of input devices
@@ -147,7 +155,7 @@ The payload is always `0x00`. The button presses are mapped to ids as follows:
 * `0x5c`: Random
 * `0x5d`: Repeat
 
-For example, packet of `0x00 0xff 0x55 0x01 0x00 0x00 0x32 0x26 0x00 0xad` (checksum omited) means *Play/pause* Network Player. 
+For example, packet of `BRK/0x00 0xff 0x55 0x01 0x00 0x00 0x32 0x26 0x00 0xad` (checksum omited) means *Play/pause* Network Player. 
 
 ##### Special functions
 
@@ -174,3 +182,7 @@ Receiver also sends button codes for analog and optical input. That means it is 
 ## Update: 07.01.2015
 
 I've finally tried transmitting data to Denon. The tip of the connector indeed is RX pin for Denon. The data transmitted to it is also echoed back on TX (I suspect that it is done by simple circuit, not uC, as it works with any baud rate). I also discovered that the extra byte of data is actually simple checksum, but it is not always present.  Unfortuanetly, amp does not respond to commands that it sends. I suspect that there needs to be flag in header that marks the messages sent to amp. I don't think that any progress can be made without access to original network player. 
+
+## Update: 27.05.2015
+
+@Slawa got hold of an osciloscope and found that initial `0x00` byte recieved from denon is not actually `0x00`, but serial port break condition. I updated the post to include that information.

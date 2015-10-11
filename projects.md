@@ -3,6 +3,10 @@ layout: page
 title: Projects
 ---
 
+## NodeLab – Visual-textual programming platform
+
+[NodeLab](http://nodelab.io) is cloud-based programming platform empowered by Luna language, that is unique due to it's dual textual-visual representation.
+
 ## Raspberry Pi and Denon DRA-F109 integration
 
 I have Denon DRA-F109 Stereo Receiver and Raspberry Pi as media player. I wanted to use one remote control for both. It was possible to use IR receiver and LIRC, but it has many drawbacks, so I reverse engineered *Remote Connector* which appeared to be 5V serial port and the data protocol. Now, I can use Raspberry Pi as it was native Denon system product. [For more, see the blog post](/2014/06/15/denon-remote-connector/).
@@ -15,4 +19,4 @@ I have Denon DRA-F109 Stereo Receiver and Raspberry Pi as media player. I wanted
 
 ## AWS-DNS – virtual DNS for AWS EC2
 
-[AWS-DNS]((https://github.com/kfigiela/aws-dns) is a DNS server that maps AWS EC2 instances into virtual `.aws` TLD. Just after you configure Mac OS X resolver you may point any app i.e. ssh or web browser to `my-instance-name.aws` or `i-1231231.eu-west-1.aws` and it will resolve to public instance IP address. For more information check the repo on [GitHub](https://github.com/kfigiela/aws-dns).
+[AWS-DNS](https://github.com/kfigiela/aws-dns) is a DNS server that maps AWS EC2 instances into virtual `.aws` TLD. Just after you configure Mac OS X resolver you may point any app i.e. ssh or web browser to `my-instance-name.aws` or `i-1231231.eu-west-1.aws` and it will transparently resolve to public instance IP address. For more information check the repo on [GitHub](https://github.com/kfigiela/aws-dns).

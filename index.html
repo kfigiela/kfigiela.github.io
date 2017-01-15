@@ -15,9 +15,9 @@ title: Home
 
     <span class="post-date">{{ post.date | date_to_string }}</span>
 
-    {% if post.excerpt %}
+    {% if post.content contains '<hr />' %}
 
-        {{ post.excerpt }}
+        {{ post.content | split:'<hr />' | first }}
 
         <p><a href="{{ post.url }}">Continue reading</a></p>
 

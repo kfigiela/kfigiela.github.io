@@ -7,9 +7,7 @@ One of the activities I do in my free time is DJing. Few months ago I bought Tra
 
 However, it is possible to modify Traktor S5/S8/D2 functionality even more. One of the missing functions of S5 is ability to change default mapping. It is possible to map some of the buttons and faders of Traktor S8 to MIDI, however it is not available for S5. Luckily, buttons are wired to Traktor functions also using QML and it is possible to remap some buttons to emulate S8 MIDI buttons.
 
-
-
-
+---
 
 First, I was looking for possible buttons for mix recorder function. I decided that `Shift + Snap` and `Shift + Quantize` are a good candidates. First, you need to apply the modification as described and follow [S8/D2 MIDI mapping instructions](https://support.native-instruments.com/hc/en-us/articles/209571249-How-Can-I-Modify-my-TRAKTOR-KONTROL-S8-D2-Default-Mapping-Using-MIDI-Controls-). In this example, I use `TogglePropertyAdapter`, so that controller maintains state (on or off) and sends revelant MIDI when state changes. It's possible to use `DirectPropertyAdapter` to receiver press and release events through MIDI, however I couldn't get the feedback LED working fine yet – there's a MIDI loop and it behaves non-deterministic.
 

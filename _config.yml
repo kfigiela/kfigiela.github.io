@@ -30,3 +30,5 @@ social:
 ga:
   id:             UA-49684412-1
   domain:         kfigiela.github.io
+
+excerpt_separator: "---"

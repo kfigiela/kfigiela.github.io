@@ -3,6 +3,8 @@ layout: page
 title: Publications
 ---
 
+1. Bartosz Balis, **Kamil Figiela**, Konrad Jopek, Maciej Malawski, and Maciej Pawlik, *Porting HPC applications to the cloud: a multi-frontal solver case study*, Journal of Computational Science, Volume 18, January 2017, Pages 106-116, [doi:10.1016/j.jocs.2016.09.006](http://dx.doi.org/10.1016/j.jocs.2016.09.006).
+1. **Kamil Figiela**, Wojciech Daniło, Adam Szlachta, *Towards efficient visual programming for science*, in CGW workshop’15, October 26–28, 2015 Kraków, pp. 91–92.
 1. Bartosz Balis, **Kamil Figiela**, Maciej Malawski, Konrad Jopek, *Leveraging Workflows and Clouds for a Multi-frontal Solver for Finite Element Meshes*, Procedia Computer Science, Volume 51, 2015, Pages 944-953, ISSN 1877-0509, [doi:10.1016/j.procs.2015.05.230](http://dx.doi.org/10.1016/j.procs.2015.05.230) (Open Access).
 1. **Kamil Figiela**, Maciej Malawski, *Modeling, Optimization and Performance Evaluation of Scientific Workflows in Clouds*, in *Proceedings of BDCloud'2014, IEEE 4th International Conference on Big Data and Cloud Computing*, 2014, [doi:10.1109/BDCloud.2014.112](http://dx.doi.org/10.1109/BDCloud.2014.112). Poster [available online](/attachments/BDCloud2014-poster.pdf).
 1. Maciej Malawski, **Kamil Figiela**, Marian Bubak, Ewa Deelman, and Jarek Nabrzyski, *Scheduling Multilevel Deadline-Constrained Scientific Workflows on Clouds Based on Cost Optimization*, Scientific Programming, vol. 2015, Article ID 680271, 13 pages, 2015. [doi:10.1155/2015/680271](http://dx.doi.org/10.1155/2015/680271) (Open Access).

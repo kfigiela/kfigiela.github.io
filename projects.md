@@ -3,9 +3,9 @@ layout: page
 title: Projects
 ---
 
-## NodeLab – Visual-textual programming platform
+## Luna Programming Language – Visual and textual functional programming language
 
-[NodeLab](http://nodelab.io) is cloud-based programming platform empowered by Luna language, that is unique due to it's dual textual-visual representation.
+[Luna](http://luna-lang.org) is a developer’s whiteboard on steroids. Design, prototype, develop and refactor any application simply by connecting visual elements together. Collaborate with co-workers, interactively fine tune parameters, inspect the results and visually profile the performance in real-time.
 
 ---
 

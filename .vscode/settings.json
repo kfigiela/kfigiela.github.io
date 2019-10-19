@@ -12,5 +12,6 @@
         "dokuwiki": {
             "parser": "plain"
         }
-    }
+    },
+    "git.ignoreLimitWarning": true
 }

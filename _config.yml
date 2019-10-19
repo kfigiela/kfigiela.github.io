@@ -32,3 +32,4 @@ ga:
   domain:         kfigiela.github.io
 
 excerpt_separator: "---"
+plugins: [jekyll-paginate]

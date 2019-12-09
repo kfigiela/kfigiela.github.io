@@ -12,3 +12,5 @@ I plan to develop user interface with more or less the same features as original
 <video width="626" autoplay loop>
     <source src="attachments/saffire-le-monitor.mp4" type="video/mp4">
 </video>
+
+**Update #1 (2019-12-09)** I released [application](https://kfigiela.github.io/2019/12/09/saffire-le-mixer-app-for-catalina/) with GUI.

@@ -12,3 +12,5 @@ I've recently bought used Firewire **Focusrite Saffire LE** audio interface to c
 **Update #2 (2017-08-28):** This works fine with late 2016 MacBook Pro with USB-C ports with OWC Thunderbolt 3 Dock as Firewire adapter. Dock provides more stable power than old 2011 MacBook, so I don't have to use external power supply for interface.
 
 **Update #3 (2018-10-11):** Confirmed to work with macOS Mojave. Note that **SaffireControl LE** app is 32-bit and next major macOS release will drop support for those. Luckily, I've managed to reverse-engineer how to control internal mixer of the Saffire programatically. We should be able to control the device, unless Apple drops support for Firewire audio.
+
+**Update #4 (2019-12-09):** As expected SaffireControl LE does not work on macOS Catalina, but the device drivers work fine. I developed a [replacement mixer application](https://kfigiela.github.io/2019/12/09/saffire-le-mixer-app-for-catalina/).
